@@ -1,0 +1,7 @@
+discord.py
+websocket-client
+requests
+coloredlogs
+pillow
+plotly
+pandas
