@@ -3,5 +3,6 @@ websocket-client
 requests
 coloredlogs
 pillow
-plotly
+plotly==5.18.0
 pandas
+kaleido==0.1.0

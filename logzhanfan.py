@@ -1,10 +1,10 @@
-
 import re
 from datetime import datetime
 import sqlite3
 import plotly.graph_objects as go
 import pandas as pd
 from plotting import *
+from PIL import Image
 
 def log2db(lines):
     language = "en"
@@ -214,11 +214,22 @@ def overview(name, cursor, language):
     if total_rep > 1000:
         fig_rep_to_others = plot_rep_to_others(name, cursor, total_rep)
         # fig_rep_to_others.show()
+        fig_hit_efficiency = None
     else:
         fig_hit_efficiency = plot_hit_efficiency(name, cursor, language)
         # fig_hit_efficiency.show()
+        fig_rep_to_others = None
     fig_rep_dmg_receive = plot_rep_dmg_receive(name, cursor, language)
-    fig_rep_dmg_receive.show()
+    # fig_rep_dmg_receive.show()
+    fig_damage_list = plot_damage_list(name, cursor, language)
+    # fig_damage_list.show()
+    fig_comb_img = combine_figures([fig_rep_to_others, 
+                                fig_hit_efficiency, 
+                                fig_rep_dmg_receive, 
+                                fig_damage_list])
+    # fig_comb_img.show()
+    fig_comb_img.save('zhanfan.png')
+    # fig_comb_img.show()
 
 def plot_game_log(time_plot_stats, name=''):
     
@@ -382,7 +393,7 @@ def plot_game_log(time_plot_stats, name=''):
 
 if __name__ == "__main__":
     # Example usage (assuming the logs are saved locally)
-    file_path = "qingmo_2.txt"
+    file_path = "mianhua.txt"
     with open(file_path, "r", encoding="utf-8") as file:
         lines = file.readlines()
         language, name, conn, cursor = log2db(lines)

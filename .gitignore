@@ -2,6 +2,7 @@ config.py
 subscriptions.json
 __pycache__
 *.txt
+*.png
 !requirements.txt
 *.html
 test.py

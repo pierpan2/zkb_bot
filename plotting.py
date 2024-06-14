@@ -1,4 +1,6 @@
 import plotly.graph_objects as go
+from io import BytesIO
+from PIL import Image, ImageDraw
 
 def plot_hit_efficiency(name, cursor, language):
     # Query to find the weapon (module) that did the most damage
@@ -34,7 +36,6 @@ def plot_hit_efficiency(name, cursor, language):
         if language == "zh":
             categories = ["Misses", "轻轻擦过", "擦过", "命中", "穿透", "强力一击", "致命一击"]
         values = [efficiency_percentages.get(eff, 0) for eff in categories]
-
         # Create a bar plot using Plotly
         fig = go.Figure(
             [go.Bar(x=categories, y=values, text=[f'{value:.2f}%' for value in values], textposition='outside', marker_color='red', textfont_size=18)])
@@ -55,7 +56,7 @@ def plot_hit_efficiency(name, cursor, language):
             template="plotly_white",
             annotations=[
                 {
-                    'text': f"{main_weapon_module} Total Damage: {total_damage:,}",
+                    'text': f"{main_weapon_module[:30]}   Total Damage: {total_damage:,}   Accuracy(≥Hit): {sum(values[3:]):.2f}%",
                     'x': 0.5,
                     'y': 1.05,
                     'xref': 'paper',
@@ -63,7 +64,8 @@ def plot_hit_efficiency(name, cursor, language):
                     'showarrow': False,
                     'font': {'size': 18}
                 }
-            ]
+            ],
+            height=700
         )
 
         # Show the plot
@@ -84,11 +86,11 @@ def plot_rep_to_others(name, cursor, total_rep):
     # Execute the query
     cursor.execute(query, (name,))
     result = cursor.fetchall()
-    categories = [name[:30] for name, number in result]
-    values = [number for name, number in result]
+    categories = [target[:30] for target, number in result]
+    values = [number for target, number in result]
     # Create a bar plot using Plotly
     fig = go.Figure(
-        [go.Bar(x=categories, y=values, text=values, textposition='outside', marker_color='blue', textfont_size=18)])
+        [go.Bar(x=categories, y=values, text=values, textposition='outside', marker_color='blue', textfont_size=15)])
     # Customize the layout
     fig.update_layout(
         title={
@@ -98,6 +100,12 @@ def plot_rep_to_others(name, cursor, total_rep):
             'xanchor': 'center',
             'yanchor': 'top'
         },
+        xaxis=dict(
+            tickangle=30,        
+            tickfont=dict(
+                size=15
+            )
+        ),
         xaxis_title="Teammates",
         yaxis_title="Repair Done",
         font=dict(size=18),
@@ -112,7 +120,8 @@ def plot_rep_to_others(name, cursor, total_rep):
                 'showarrow': False,
                 'font': {'size': 18}
             }
-        ]
+        ],
+        height=700
     )
     # Show the plot
     # fig.show()
@@ -143,17 +152,23 @@ def plot_rep_dmg_receive(name, cursor, language):
     # Execute the repair receive query
     cursor.execute(dmg_query, (name,))
     dmg_receive = cursor.fetchall()
-    categories_dmg = [name[:30] for name, number in dmg_receive[:6]]
-    values_dmg = [number for name, number in dmg_receive[:6]]
+    # categories_dmg = [name[:30] for name, number in dmg_receive[:6] if len(name)<30]
+    categories_dmg=[]
+    for target, number in dmg_receive[:6]:
+        if len(target) < 30:
+            categories_dmg.append(target)
+        else:
+            categories_dmg.append(target[:18]+'...'+target[-9:])
+    values_dmg = [number for target, number in dmg_receive[:6]]
     if (not rep_receive) and (not dmg_receive):
         return None
     # Create a bar plot using Plotly
     fig = go.Figure(
         data=[
             go.Bar(x=categories_rep, y=values_rep, text=values_rep, name='Repair',
-                   textposition='outside', marker_color='blue', textfont_size=18),
+                   textposition='outside', marker_color='blue', textfont_size=15),
             go.Bar(x=categories_dmg, y=values_dmg, text=values_dmg, name='Damage', 
-                   textposition='outside', marker_color='red', textfont_size=18)
+                   textposition='outside', marker_color='red', textfont_size=15)
             ])
     # Customize the layout
     fig.update_layout(
@@ -164,6 +179,12 @@ def plot_rep_dmg_receive(name, cursor, language):
             'xanchor': 'center',
             'yanchor': 'top'
         },
+        xaxis=dict(
+            tickangle=30,        
+            tickfont=dict(
+                size=15
+            )
+        ),
         xaxis_title="Source",
         yaxis_title="Rep or Dmg Value",
         font=dict(size=18),
@@ -179,8 +200,62 @@ def plot_rep_dmg_receive(name, cursor, language):
                 'font': {'size': 18}
             }
         ],
-        showlegend=True
+        showlegend=True,
+        height=700
     )
     # Show the plot
     # fig.show()
     return fig
+
+def plot_damage_list(name, cursor, language):
+    # Query to count the total repair from player_name to each different target
+    damage_query = f'''
+    SELECT target, SUM(number) as total_damage
+    FROM {name}
+    WHERE type='damage' AND source=?
+    GROUP BY target
+    ORDER BY total_damage DESC;
+    '''
+    cursor.execute(damage_query, (name,))
+    damage_totals = cursor.fetchall()
+    if not damage_totals:
+        return None
+    damages = [damage for target, damage in damage_totals]
+    targets = [target[:30] for target, damage in damage_totals]
+    fig = go.Figure(data=[go.Table(
+        columnwidth=[1, 2], 
+        header=dict(values=['Total Damage', 'Target'], font_size=18),
+        cells=dict(values=[damages, targets], font_size=16, height=30)
+    )])
+    fig.update_layout(
+        title='Damage Summary',
+        title_font_size=20,
+        title_x=0.5  # Centers the title
+    )
+    # fig.show()
+    return fig
+
+def combine_figures(fig_list, line_thickness=3):
+    fig_list = [fig for fig in fig_list if fig is not None]
+    images = []
+    buffers = []
+    for fig in fig_list:
+        img_buffer = BytesIO()
+        fig.write_image(img_buffer, format='png')
+        img_buffer.seek(0)
+        images.append(Image.open(img_buffer))
+        buffers.append(img_buffer)
+    widths, heights = zip(*(i.size for i in images))
+    total_height = sum(heights) + line_thickness * len(images)
+    max_width = max(widths)
+    combined_image = Image.new('RGB', (max_width, total_height))
+    y_offset = 0
+    for img in images:
+        combined_image.paste(img, (0, y_offset))
+        y_offset += img.height
+        draw = ImageDraw.Draw(combined_image)
+        draw.rectangle([0, y_offset, max_width, y_offset + line_thickness], fill='black')
+        y_offset += line_thickness
+    for buffer in buffers:
+        buffer.close()
+    return combined_image
