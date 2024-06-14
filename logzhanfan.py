@@ -228,8 +228,8 @@ def overview(name, cursor, language):
                                 fig_rep_dmg_receive, 
                                 fig_damage_list])
     # fig_comb_img.show()
-    fig_comb_img.save('zhanfan.png')
-    # fig_comb_img.show()
+    # fig_comb_img.save('zhanfan.png')
+    return fig_comb_img
 
 def plot_game_log(time_plot_stats, name=''):
     
@@ -404,7 +404,7 @@ if __name__ == "__main__":
         #for row in rows:
         #    print(row)
 
-        overview(name, cursor, language)
+        zhanfan_img = overview(name, cursor, language)
 
         # Close the connection
         conn.close()
