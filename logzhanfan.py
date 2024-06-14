@@ -231,6 +231,7 @@ def overview(name, cursor, language):
     # fig_comb_img.save('zhanfan.png')
     return fig_comb_img
 
+# TODO: rewrite
 def plot_game_log(time_plot_stats, name=''):
     
     # Parsing the filtered data
@@ -393,18 +394,11 @@ def plot_game_log(time_plot_stats, name=''):
 
 if __name__ == "__main__":
     # Example usage (assuming the logs are saved locally)
-    file_path = "mianhua.txt"
+    file_path = "your_log_file.txt"
     with open(file_path, "r", encoding="utf-8") as file:
         lines = file.readlines()
         language, name, conn, cursor = log2db(lines)
-
-        select_query = f'SELECT * FROM {name} WHERE type=\'damage\' AND source=\'Lily_Mo\' AND notes=\'Misses\';'
-        cursor.execute(select_query)
-        rows = cursor.fetchall()
-        #for row in rows:
-        #    print(row)
-
         zhanfan_img = overview(name, cursor, language)
-
+        zhanfan_img.shou()
         # Close the connection
         conn.close()
