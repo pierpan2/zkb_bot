@@ -8,6 +8,5 @@ __pycache__
 *.html
 test.py
 my_bot.py
-Procfile
 ```
 *.lnk
