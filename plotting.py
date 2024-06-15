@@ -4,11 +4,11 @@ from PIL import Image, ImageDraw
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 
-font_name = "WenQuanYi Zen Hei"
+font_name = "Microsoft YaHei"
 import matplotlib.font_manager as fm
 
 def plot_hit_efficiency(name, cursor, language):
-    font_path = '/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc'
+    font_path = './wryh.ttf'
     prop = fm.FontProperties(fname=font_path)
     print(prop.get_name())
     # Query to find the weapon (module) that did the most damage
