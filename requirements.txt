@@ -8,7 +8,7 @@ discord.py==2.3.2
 frozenlist==1.4.1
 humanfriendly==10.0
 idna==3.7
-kaleido @ file:///home/conda/feedstock_root/build_artifacts/python-kaleido_1607210393897/work
+kaleido==0.1.0
 multidict==6.0.5
 numpy==1.26.4
 packaging==24.1
