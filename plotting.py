@@ -41,6 +41,9 @@ def plot_hit_efficiency(name, cursor, language):
             [go.Bar(x=categories, y=values, text=[f'{value:.2f}%' for value in values], textposition='outside', marker_color='red', textfont_size=18)])
 
         # Customize the layout
+        font_family = "Arial"
+        if language == 'zh':
+            font_family = "WenQuanYi Zen Hei"
         fig.update_layout(
             title={
                 'text': f"Zhanfan: {name.replace('_', ' ')}",
@@ -52,7 +55,10 @@ def plot_hit_efficiency(name, cursor, language):
             xaxis_title="Efficiency",
             yaxis_title="Percentage (%)",
             yaxis=dict(tickformat=".2f"),
-            font=dict(size=18),
+            font=dict(
+                size=18,
+                family=font_family
+            ),
             template="plotly_white",
             annotations=[
                 {
@@ -74,7 +80,7 @@ def plot_hit_efficiency(name, cursor, language):
     else:
         return None
 
-def plot_rep_to_others(name, cursor, total_rep):
+def plot_rep_to_others(name, cursor, total_rep, language):
     # Query to get the total repair done to each different target by the player
     query = f'''
         SELECT target, SUM(number) as total_repair
@@ -92,6 +98,9 @@ def plot_rep_to_others(name, cursor, total_rep):
     fig = go.Figure(
         [go.Bar(x=categories, y=values, text=values, textposition='outside', marker_color='blue', textfont_size=15)])
     # Customize the layout
+    font_family = "Arial"
+    if language == 'zh':
+        font_family = "WenQuanYi Zen Hei"
     fig.update_layout(
         title={
             'text': f"Zhanfan: {name.replace('_', ' ')}",
@@ -108,7 +117,10 @@ def plot_rep_to_others(name, cursor, total_rep):
         ),
         xaxis_title="Teammates",
         yaxis_title="Repair Done",
-        font=dict(size=18),
+        font=dict(
+            size=18,
+            family=font_family
+        ),
         template="plotly_white",
         annotations=[
             {
@@ -171,6 +183,9 @@ def plot_rep_dmg_receive(name, cursor, language):
                    textposition='outside', marker_color='red', textfont_size=15)
             ])
     # Customize the layout
+    font_family = "Arial"
+    if language == 'zh':
+        font_family = "WenQuanYi Zen Hei"
     fig.update_layout(
         title={
             'text': f"Zhanfan: {name.replace('_', ' ')}",
@@ -187,7 +202,10 @@ def plot_rep_dmg_receive(name, cursor, language):
         ),
         xaxis_title="Source",
         yaxis_title="Rep or Dmg Value",
-        font=dict(size=18),
+        font=dict(
+            size=18,
+            family=font_family
+        ),
         template="plotly_white",
         annotations=[
             {
@@ -227,10 +245,16 @@ def plot_damage_list(name, cursor, language):
         header=dict(values=['Total Damage', 'Target'], font_size=18),
         cells=dict(values=[damages, targets], font_size=16, height=30)
     )])
+    font_family = "Arial"
+    if language == 'zh':
+        font_family = "WenQuanYi Zen Hei"
     fig.update_layout(
         title='Damage Summary',
         title_font_size=20,
         title_x=0.5  # Centers the title
+        font=dict(
+            family=font_family
+        ),
     )
     # fig.show()
     return fig
