@@ -12,6 +12,7 @@ RUN pip3 install --no-cache-dir -r requirements.txt
 
 # Install additional packages
 RUN apt-get update && apt-get install -y fonts-wqy-zenhei
-
+# refresh system font cache
+RUN fc-cache -f -v
 # Command to run your bot
 CMD ["python3.10", "bot.py"]
