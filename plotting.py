@@ -62,7 +62,10 @@ def plot_hit_efficiency(name, cursor, language):
             xaxis_title="Efficiency",
             yaxis_title="Percentage (%)",
             yaxis=dict(tickformat=".2f"),
-            font=dict(size=18),
+            font=dict(
+                size=18,
+                family=font_name
+            ),
             template="plotly_white",
             annotations=[
                 {
