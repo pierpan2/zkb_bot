@@ -1,8 +1,16 @@
 import plotly.graph_objects as go
 from io import BytesIO
 from PIL import Image, ImageDraw
+import matplotlib.pyplot as plt
+import matplotlib as mpl
+
+font_name = "WenQuanYi Zen Hei"
+import matplotlib.font_manager as fm
 
 def plot_hit_efficiency(name, cursor, language):
+    font_path = '/usr/share/fonts/truetype/wqy/wqy-zenhei.ttc'
+    prop = fm.FontProperties(fname=font_path)
+    print(prop.get_name())
     # Query to find the weapon (module) that did the most damage
     query = f'''
         SELECT module, SUM(number) as total_damage
@@ -35,6 +43,8 @@ def plot_hit_efficiency(name, cursor, language):
                       "Hits", "Penetrates", "Smashes", "Wrecks"]
         if language == "zh":
             categories = ["Misses", "轻轻擦过", "擦过", "命中", "穿透", "强力一击", "致命一击"]
+            mpl.rcParams['font.family'] = font_name
+            mpl.rcParams['font.sans-serif'] = [font_name]
         values = [efficiency_percentages.get(eff, 0) for eff in categories]
         # Create a bar plot using Plotly
         fig = go.Figure(
@@ -74,7 +84,7 @@ def plot_hit_efficiency(name, cursor, language):
     else:
         return None
 
-def plot_rep_to_others(name, cursor, total_rep):
+def plot_rep_to_others(name, cursor, total_rep, language):
     # Query to get the total repair done to each different target by the player
     query = f'''
         SELECT target, SUM(number) as total_repair
@@ -91,6 +101,9 @@ def plot_rep_to_others(name, cursor, total_rep):
     # Create a bar plot using Plotly
     fig = go.Figure(
         [go.Bar(x=categories, y=values, text=values, textposition='outside', marker_color='blue', textfont_size=15)])
+    if language == 'zh':
+        mpl.rcParams['font.family'] = font_name
+        mpl.rcParams['font.sans-serif'] = [font_name]
     # Customize the layout
     fig.update_layout(
         title={
@@ -163,6 +176,9 @@ def plot_rep_dmg_receive(name, cursor, language):
     if (not rep_receive) and (not dmg_receive):
         return None
     # Create a bar plot using Plotly
+    if language == 'zh':
+        mpl.rcParams['font.family'] = font_name
+        mpl.rcParams['font.sans-serif'] = [font_name]
     fig = go.Figure(
         data=[
             go.Bar(x=categories_rep, y=values_rep, text=values_rep, name='Repair',
@@ -227,6 +243,9 @@ def plot_damage_list(name, cursor, language):
         header=dict(values=['Total Damage', 'Target'], font_size=18),
         cells=dict(values=[damages, targets], font_size=16, height=30)
     )])
+    if language == 'zh':
+        mpl.rcParams['font.family'] = font_name
+        mpl.rcParams['font.sans-serif'] = [font_name]
     fig.update_layout(
         title='Damage Summary',
         title_font_size=20,

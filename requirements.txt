@@ -26,3 +26,4 @@ tzdata==2024.1
 urllib3==2.2.1
 websocket-client==1.8.0
 yarl==1.9.4
+matplotlib

@@ -6,6 +6,7 @@ import pandas as pd
 from plotting import *
 from PIL import Image
 
+
 def log2db(lines):
     language = "en"
     dmg_to = "to"
@@ -212,7 +213,7 @@ def overview(name, cursor, language):
     total_rep = total_rep if total_rep else 0
     # use total repair = 1000 as logi threshold
     if total_rep > 1000:
-        fig_rep_to_others = plot_rep_to_others(name, cursor, total_rep)
+        fig_rep_to_others = plot_rep_to_others(name, cursor, total_rep, language)
         # fig_rep_to_others.show()
         fig_hit_efficiency = None
     else:
