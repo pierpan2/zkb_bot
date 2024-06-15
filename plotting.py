@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 
 import matplotlib.font_manager as fm
-font_name = "Microsoft YaHei"
+font_name = "WenQuanYi Zen Hei"
 font_path = './wryh.ttf'
 prop = fm.FontProperties(fname=font_path)
 
@@ -42,7 +42,7 @@ def plot_hit_efficiency(name, cursor, language):
                       "Hits", "Penetrates", "Smashes", "Wrecks"]
         if language == "zh":
             categories = ["Misses", "轻轻擦过", "擦过", "命中", "穿透", "强力一击", "致命一击"]
-            fm.fontManager.addfont(font_path)
+            # fm.fontManager.addfont(font_path)
             mpl.rcParams['font.family'] = font_name
             mpl.rcParams['font.sans-serif'] = [font_name]
         values = [efficiency_percentages.get(eff, 0) for eff in categories]
@@ -105,7 +105,7 @@ def plot_rep_to_others(name, cursor, total_rep, language):
     fig = go.Figure(
         [go.Bar(x=categories, y=values, text=values, textposition='outside', marker_color='blue', textfont_size=15)])
     if language == 'zh':
-        fm.fontManager.addfont(font_path)
+        # fm.fontManager.addfont(font_path)
         mpl.rcParams['font.family'] = font_name
         mpl.rcParams['font.sans-serif'] = [font_name]
     # Customize the layout
@@ -182,7 +182,7 @@ def plot_rep_dmg_receive(name, cursor, language):
     # Create a bar plot using Plotly
     if language == 'zh':
         
-        fm.fontManager.addfont(font_path)
+        # fm.fontManager.addfont(font_path)
         mpl.rcParams['font.family'] = font_name
         mpl.rcParams['font.sans-serif'] = [font_name]
     fig = go.Figure(
@@ -250,7 +250,7 @@ def plot_damage_list(name, cursor, language):
         cells=dict(values=[damages, targets], font_size=16, height=30)
     )])
     if language == 'zh':
-        fm.fontManager.addfont(font_path)
+        # fm.fontManager.addfont(font_path)
         mpl.rcParams['font.family'] = font_name
         mpl.rcParams['font.sans-serif'] = [font_name]
     fig.update_layout(
