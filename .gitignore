@@ -3,9 +3,11 @@ subscriptions.json
 __pycache__
 *.txt
 *.png
+.env
 !requirements.txt
 *.html
 test.py
 my_bot.py
+Procfile
 ```
 *.lnk

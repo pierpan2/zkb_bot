@@ -229,7 +229,7 @@ def overview(name, cursor, language):
                                 fig_damage_list])
     # fig_comb_img.show()
     # fig_comb_img.save('zhanfan.png')
-    return fig_comb_img
+    return fig_comb_img, fig_rep_dmg_receive
 
 # TODO: rewrite
 def plot_game_log(time_plot_stats, name=''):
@@ -392,6 +392,11 @@ def plot_game_log(time_plot_stats, name=''):
     return fig
 
 
+def all_in_one(lines):
+    language, name, conn, cursor = log2db(lines)
+    zhanfan_img, fig = overview(name, cursor, language)
+    return zhanfan_img, fig
+
 if __name__ == "__main__":
     # Example usage (assuming the logs are saved locally)
     file_path = "your_log_file.txt"
@@ -399,6 +404,6 @@ if __name__ == "__main__":
         lines = file.readlines()
         language, name, conn, cursor = log2db(lines)
         zhanfan_img = overview(name, cursor, language)
-        zhanfan_img.shou()
+        zhanfan_img.show()
         # Close the connection
         conn.close()
