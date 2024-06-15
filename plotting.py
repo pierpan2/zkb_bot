@@ -251,7 +251,7 @@ def plot_damage_list(name, cursor, language):
     fig.update_layout(
         title='Damage Summary',
         title_font_size=20,
-        title_x=0.5  # Centers the title
+        title_x=0.5,  # Centers the title
         font=dict(
             family=font_family
         ),
